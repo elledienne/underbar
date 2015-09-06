@@ -167,6 +167,11 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    if(typeof collection === 'object' && !Array.isArray(collection)){
+      collection = _.map(collection, function(item){
+        return item;
+      });
+    }
     if(accumulator === undefined){
       accumulator = collection.shift();
     }
