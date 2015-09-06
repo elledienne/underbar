@@ -274,7 +274,7 @@
         };
 
         var total = _.reduce(scores, function(sum, next){
-         console.log(next);
+         //console.log(next);
          return sum+next;
         });
 
