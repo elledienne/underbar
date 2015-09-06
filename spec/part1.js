@@ -265,6 +265,22 @@
         expect(total).to.equal(11);
       });
 
+      it('should not invoke the iterator on the first element when using it as an accumulator [USING OBJECTS]', function() {
+        
+        var scores = {
+          lorenzo: 10,
+          giulia: 8,
+          carla: 4
+        };
+
+        var total = _.reduce(scores, function(sum, next){
+         console.log(next);
+         return sum+next;
+        });
+
+        expect(total).to.equal(22);
+      });
+
     });
   });
 
