@@ -101,6 +101,16 @@
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
+    array = array.sort(function(a, b){ return a > b;});
+    var filtered = [];
+
+    _.each(array, function(item, index){
+      if(filtered.length === 0 || filtered[filtered.length-1] !== item){
+        filtered.push(item);
+      }
+    });
+
+    return filtered;
   };
 
 
