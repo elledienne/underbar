@@ -506,6 +506,18 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    var arrays = _.sortBy(Array.prototype.slice.call(arguments), 'length');
+    var checkAgainst = arrays.shift();
+
+    return _.reduce(checkAgainst, function(intersection, nextElement){
+      var isShared = _.every(arrays, function(array){
+        return _.indexOf(array, nextElement) === -1 ? false : true;
+      });
+      if(isShared){
+        intersection.push(nextElement);
+      }
+      return intersection;
+    }, []);
   };
 
   // Take the difference between one array and a number of other arrays.
