@@ -330,34 +330,35 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    // MUST BE CHECKED AND IMPROVED
-    var result = [];
+    var arguments_saved = [];
 
     var checkArgs = function(args){
-      if(result.length !== 0){
-        _.each(result, function(obj){
-          if(obj.args.length !== args.length){
-            return true;
-          }
-          return _.every(obj.args, function(item){
-            return !Boolean(_.indexOf(args, item));
-          });
+      var checked = {
+        shouldExecute: undefined,
+        indexMatched: undefined
+      };
+
+      checked.shouldExecute = !_.some(arguments_saved, function(arrayOfargs, index){
+        checked.indexMatched = index;
+        return _.every(arrayOfargs, function(arg, i){
+          return _.indexOf(args, arg) === -1 ? true : false;
         });
-      }
-      return true;
-    }
+      });
+      return checked;
+    };
 
     return function(){
       var args = Array.prototype.slice.call(arguments);
-      var toExecute = checkArgs(args);
-      if(toExecute === true){
-        var resultToReturn = func.apply(null, args);
-        result.push(
-          {
-            args: args,
-            result: resultToReturn
-          });
-        return resultToReturn;
+      var handle = checkArgs(args);
+      if(handle.shouldExecute){
+        var result = func.apply(null, args);
+        arguments_saved.push({
+          args: args,
+          result: result
+        });
+        return result;
+      } else {
+        return arguments_saved[handle.indexMatched].result;
       }
     };
   };
