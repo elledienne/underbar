@@ -330,6 +330,54 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    // MUST BE CHECKED AND IMPROVED
+    var result = [];
+
+    var checkArgs = function(args){
+      if(result.length !== 0){
+        _.each(result, function(obj){
+          if(obj.args.length !== args.length){
+            return true;
+          }
+          return _.every(obj.args, function(item){
+            return !Boolean(_.indexOf(args, item));
+          });
+        });
+      }
+      return true;
+    }
+
+    return function(){
+      var args = Array.prototype.slice.call(arguments);
+      var toExecute = checkArgs(args);
+      if(toExecute === true){
+        var resultToReturn = func.apply(null, args);
+        result.push(
+          {
+            args: args,
+            result: resultToReturn
+          });
+        return resultToReturn;
+      }
+    };
+    // var checkArgs = function(result, arguments){
+
+    // }
+
+    // return function(){
+    //   _.each(result, function(argSet){
+    //     _.
+    //   })
+
+
+    //   if(executed === true){
+    //     return result;
+    //   } else {
+    //     executed = true;
+    //     result = func.apply(null, arguments);
+    //     return result;
+    //   }
+    // };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
