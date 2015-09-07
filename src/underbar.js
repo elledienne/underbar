@@ -219,6 +219,33 @@
     });
   };
 
+  _.someShort = function(collection, iterator){
+    // Here the not-clever-but-fast solution
+    // This solution relies on the _.find function (not requested in this exercise but
+    // a standard underscore.js fn). The plus of this implementation is that it doesn't
+    // cycle through all the collection but it returns at the first item passing the test
+    // Personally i prefer this one :)
+
+    iterator = iterator || _.identity;
+    return _.find(collection, iterator) !== undefined ? true : false;
+  };
+
+  _.find = function(collection, iterator){
+    if(Array.isArray(collection)){
+      for(var i = 0; i < collection.length; i++){
+        if(iterator(collection[i])){
+          return collection[i];
+        }
+      }
+    } else {
+      for(var key in collection){
+        if(iterator(collection[key])){
+          return collection[key];
+        }
+      }
+    }
+    return undefined;
+  }
 
   /**
    * OBJECTS
