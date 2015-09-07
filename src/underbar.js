@@ -176,7 +176,7 @@
       accumulator = collection.shift();
     }
     _.each(collection, function(item, index, array){
-      accumulator = iterator(accumulator, item);
+      accumulator = iterator(accumulator, item, index);
     });
 
     return accumulator;
@@ -199,11 +199,11 @@
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
     iterator = iterator || _.identity;
-    return _.reduce(collection, function(isEvery, next){
+    return _.reduce(collection, function(isEvery, next, index){
       if(!isEvery){
         return false;
       }
-      return Boolean(iterator(next));
+      return Boolean(iterator(next, index));
     }, true);
   };
 
@@ -212,10 +212,10 @@
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
     iterator = iterator || _.identity;
-    return !_.every(collection, function(item){
+    return !_.every(collection, function(item, index){
       // This line flip the iterator test. In this way, the _.every function, stops
       // evaluating the elements after the first match
-      return !iterator(item);
+      return !iterator(item, index);
     });
   };
 
@@ -387,6 +387,34 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var shuffled,
+        areDifferent = false,
+        rnd;
+
+    var randomize = function(array, item){
+      var doneRandomize = false;
+      while(!doneRandomize ){
+        rnd = Math.floor(Math.random()*array.length);
+        if(shuffled[rnd] === undefined){
+          shuffled[rnd] = item;
+          doneRandomize = true;
+        }
+      }
+    }
+
+    var checkIfDifferent = function(original, shuffled){
+      areDifferent = _.some(original, function(item, index){
+        return item !== shuffled[index];
+      });
+    }
+    while(!areDifferent){
+      shuffled = [];
+      _.each(array, function(item, index){
+        randomize(array, item)
+      });
+      checkIfDifferent(array, shuffled);
+    }
+    return shuffled;
   };
 
 
