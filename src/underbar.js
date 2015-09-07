@@ -523,6 +523,17 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var arrays = Array.prototype.slice.call(arguments, 1);
+
+    return _.reduce(array, function(diffentialArray, nextElement){
+      var shouldBeAdded = _.some(arrays, function(arr){
+        return _.indexOf(arr, nextElement) !== -1 ? true : false;
+      });
+      if(!shouldBeAdded){
+        diffentialArray.push(nextElement);
+      }
+      return diffentialArray;
+    }, []);
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
