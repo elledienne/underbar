@@ -542,5 +542,44 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+    // I am not sure that is working as expected, so if you want to review this piece
+    // of code you are welcome :)
+    var result = null,
+        queued = null,
+        timer = null;
+
+    var startTimer = function(){
+      timer = setTimeout(resume, wait);
+    }
+
+    var resume = function(){
+      timer = null;
+      if(queued){
+        queued();
+      }
+      queued = null;
+    }
+
+    return function() {
+      var args,
+          toExecute;
+
+      if(queued){
+        return result;
+      }
+
+      args = [].slice.call(arguments);
+
+      toExecute = function() {
+        result = func.apply(null, args);
+        startTimer();
+      };
+
+      if(!timer) {
+        toExecute();
+        queued = toExecute;
+      }
+      return result;
+    }
   };
 }());
